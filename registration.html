@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Employee</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Ensure the page is fully scrollable */
+        html, body {
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Dropdown should be scrollable but collapsed initially */
+        .dropdown-container {
+            position: relative;
+        }
+
+        .scrollable-dropdown {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+    <script>
+        function toggleNewManagerField() {
+            var managerDropdown = document.getElementById("manager");
+            var newManagerField = document.getElementById("newManagerField");
+
+            if (managerDropdown.value === "Other") {
+                newManagerField.style.display = "block";
+            } else {
+                newManagerField.style.display = "none";
+            }
+        }
+
+        function updateManagerList() {
+            var isManagerCheckbox = document.getElementById("isManager");
+            var firstName = document.getElementById("firstname").value.trim();
+            var lastName = document.getElementById("lastname").value.trim();
+            var managerDropdown = document.getElementById("manager");
+
+            var fullName = firstName + " " + lastName;
+            
+            // Remove duplicate "Other" options
+            let options = managerDropdown.options;
+            let foundOther = false;
+            for (let i = 0; i < options.length; i++) {
+                if (options[i].value === "Other") {
+                    if (foundOther) {
+                        managerDropdown.remove(i);
+                        break;
+                    }
+                    foundOther = true;
+                }
+            }
+
+            // Add new manager only if checked and not already in the list
+            if (isManagerCheckbox.checked && firstName && lastName) {
+                let exists = Array.from(options).some(opt => opt.value === fullName);
+                if (!exists) {
+                    let newOption = document.createElement("option");
+                    newOption.value = fullName;
+                    newOption.textContent = fullName;
+                    managerDropdown.insertBefore(newOption, managerDropdown.lastElementChild);
+                }
+            } else {
+                // Remove from dropdown if unchecked
+                for (let i = 0; i < options.length; i++) {
+                    if (options[i].value === fullName) {
+                        managerDropdown.remove(i);
+                        break;
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <br>
+    <div class="container">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">Register Employee</h2>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/registerEmployee}" th:object="${employee}" method="POST">
+
+                        <div class="form-group mb-3">
+                            <label for="firstname">First Name:</label>
+                            <input type="text" th:field="*{firstname}" class="form-control" id="firstname" required oninput="updateManagerList()">
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="lastname">Last Name:</label>
+                            <input type="text" th:field="*{lastname}" class="form-control" id="lastname" required oninput="updateManagerList()">
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="email">Email:</label>
+                            <input type="email" th:field="*{email}" class="form-control" id="email" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="department">Department:</label>
+                            <input type="text" th:field="*{department}" class="form-control" id="department" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="salary">Salary:</label>
+                            <input type="number" th:field="*{salary}" class="form-control" id="salary" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <input type="checkbox" th:field="*{isManager}" id="isManager" onchange="updateManagerList()">
+                            <label for="isManager">Is this employee a manager?</label>
+                        </div>
+
+                        <!-- Dropdown for selecting a manager -->
+                        <div class="form-group mb-3">
+                            <label for="manager">Select Manager:</label>
+                            <div class="dropdown-container">
+                                <select id="manager" th:field="*{manager}" class="form-select scrollable-dropdown" onchange="toggleNewManagerField()">
+                                    <option value="">-- Select Manager --</option>
+                                    <th:block th:each="mgr : ${managers}">
+                                        <option th:value="${mgr}" th:text="${mgr}"></option>
+                                    </th:block>
+                                    <option value="Other">Other</option> <!-- Ensured only one 'Other' remains -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Input for adding a new manager (hidden initially) -->
+                        <div class="form-group mb-3" id="newManagerField" style="display: none;">
+                            <label for="newManager">Enter New Manager Name:</label>
+                            <input type="text" id="newManager" name="newManager" class="form-control">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
