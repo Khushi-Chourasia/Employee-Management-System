@@ -30,7 +30,6 @@ Project Structure:
 
 /employee-management-app
 ├── src/main/java/codingtechniques
-
 │   ├── model/Employee.java
 │   ├── repository/EmployeeRepository.java
 │   ├── service/EmployeeService.java
@@ -48,6 +47,6 @@ Project Structure:
 ├── pom.xml
 ├── README.md
 
-Contributor:
+Author
 
-Khushi Chourasia - https://github.com/Khushi-Chourasia
+Khushi Chourasia, CMR University graduate, Bangalore
