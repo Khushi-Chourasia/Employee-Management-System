@@ -15,16 +15,22 @@ Features:
 Technologies Used:
 
 1)Spring Boot 3.3.0
+
 2)Spring Data JPA (for database operations)
+
 3)Thymeleaf (for UI rendering)
+
 4)MySQL (as database)
+
 5)Bootstrap 5 (for frontend styling)
+
 6)Maven (for dependency management)
 
 Project Structure:
 
 /employee-management-app
 ├── src/main/java/codingtechniques
+
 │   ├── model/Employee.java
 │   ├── repository/EmployeeRepository.java
 │   ├── service/EmployeeService.java
